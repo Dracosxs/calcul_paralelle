@@ -10,11 +10,10 @@ import java.util.ArrayList;
 public class DispatcherRaytracer implements Dispatcher {
 	Disp disp;
 	Scene scene;
-	ArrayList<Distant> distants = new ArrayList<>();
 	ArrayList<int[]> parts = new ArrayList<>();
 
 	public DispatcherRaytracer(Scene scene, int nbParts) {
-		int size = 2048;
+		int size = 512;
 		disp = new Disp("Raytracer", size, size);
 		this.scene = scene;
 		int w = size / nbParts;
@@ -27,23 +26,18 @@ public class DispatcherRaytracer implements Dispatcher {
 	}
 
 	@Override
-	public void register(Distant d) throws RemoteException {
-		distants.add(d);
-	}
-
-	@Override
 	public synchronized void setImage(Image img, int x, int y) throws RemoteException {
 		disp.setImage(img, x, y);
 	}
 
 	@Override
 	public synchronized int[] requestPart() throws RemoteException {
+		if (parts.isEmpty()) return null;
+
 		try {
 			System.out.println("Sending part to " + RemoteServer.getClientHost());
 		} catch (ServerNotActiveException ignored) {
 		}
-
-		if (parts.isEmpty()) return null;
 
 		return parts.remove(0);
 	}
