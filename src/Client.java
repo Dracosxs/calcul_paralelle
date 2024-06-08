@@ -17,7 +17,6 @@ public class Client {
 
 		Registry registry = LocateRegistry.getRegistry(ip);
 		Dispatcher dispatcher = (Dispatcher) registry.lookup("dispatcher");
-		Distant distant = new Distant();
 
 		Scene scene = dispatcher.getScene();
 		/*
@@ -40,9 +39,9 @@ public class Client {
 				}
 				while (part != null) {
 					System.out.println("Calculating part " + part[0] + " " + part[1] + " " + part[2] + " " + part[3]);
-					Image image = distant.calculate(scene, part[0], part[1], part[2], part[3]);
+					Image image = scene.compute(part[0], part[1], part[2], part[3]);
 					try {
-						dispatcher.setImage(image, part[0], part[1]);
+						dispatcher.setImage(image, part);
 					} catch (RemoteException e) {
 						System.out.println("Error while sending image");
 					}

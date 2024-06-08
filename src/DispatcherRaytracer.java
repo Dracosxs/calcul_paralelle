@@ -26,8 +26,14 @@ public class DispatcherRaytracer implements Dispatcher {
 	}
 
 	@Override
-	public synchronized void setImage(Image img, int x, int y) throws RemoteException {
-		disp.setImage(img, x, y);
+	public synchronized void setImage(Image img, int[] part) throws RemoteException {
+		for (int[] currentPart : parts) {
+			if (currentPart[0] == part[0] && currentPart[1] == part[1]) {
+				parts.remove(currentPart);
+				break;
+			}
+		}
+		disp.setImage(img, part[0], part[1]);
 	}
 
 	@Override
@@ -39,7 +45,9 @@ public class DispatcherRaytracer implements Dispatcher {
 		} catch (ServerNotActiveException ignored) {
 		}
 
-		return parts.remove(0);
+		int[] part = parts.remove(0);
+		parts.add(part);
+		return part;
 	}
 
 	@Override
